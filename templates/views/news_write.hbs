@@ -1,71 +1,78 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Create News</title>
-    <style>
-              body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-      }
-      h1 {
-        text-align: center;
-        padding: 20px;
-        background-color: #007bff;
-        color: white;
-        margin: 0;
-      }
-      form {
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-      }
-      label {
-        display: block;
-        margin-bottom: 10px;
-      }
-      input[type="text"], textarea {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        box-sizing: border-box;
-        margin-bottom: 20px;
-        font-size: 16px;
-      }
-      input[type="file"] {
-        margin-bottom: 20px;
-      }
-      input[type="submit"] {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-      }
-      input[type="submit"]:hover {
-        background-color: #0056b3;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Create News</h1>
-    <form>
-      <label for="news-title">News Title:</label>
-      <input type="text" id="news-title" name="news-title" required><br><br>
 
-      <label for="news-description">News Description:</label>
-      <textarea id="news-description" name="news-description" rows="5" cols="30" required></textarea><br><br>
+<head>
+  <meta charset="UTF-8">
+  <title>Haber Ekle</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/form.css">
+</head>
 
-      <label for="news-image">News Image:</label>
-      <input type="file" id="news-image" name="news-image"><br><br>
+<body>
+  <div class="container mt-5">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-md-12">
+        <form action="/save" method="POST" id="regForm">
+          <h1 id="register">Haber Ekle</h1>
+          <div class="all-steps" id="all-steps"> <span class="step"></span> <span class="step"></span> <span
+              class="step"></span> <span class="step"></span> </div>
+          <div class="tab">
+            <h3>Haber Başlığı:</h3>
+            <p><input type="text" oninput="this.className = ''" name="title"></p>
 
-      <input type="submit" value="Submit">
-    </form>
-  </body>
+          </div>
+          <div class="tab">
+             <h3>Haber İçeriği:</h3>
+              <textarea name="description" id="editor"></textarea>
+              
+
+          </div>
+          <div class="tab">
+
+              <h3>Haber Dili</h3>
+               <select class="form-control" name="lang" id="">
+                <option value="tr">Türkçe</option>
+                <option value="en">İngilizce</option>
+                <option value="es">İspanyolca</option>
+              </select>
+
+          </div>
+
+                    <div class="tab">
+
+              <h3>Haber Görseli</h3>
+               <input type="file" class="form-control" name="file" id="">
+
+          </div>
+
+          <div class="thanks-message text-center" id="text-message"> <img src="https://i.imgur.com/O18mJ1K.png"
+              width="100" class="mb-4">
+            <h3>Thanks for your Donation!</h3> <span>Your donation has been entered! We will contact you shortly!</span>
+          </div>
+          <div class="mt-2" style="overflow:auto;" id="nextprevious">
+            <div style="float:right;"> <button type="button" id="prevBtn" onclick="nextPrev(-1)">Geri</button>
+              <button type="button" id="nextBtn" onclick="nextPrev(1)">İleri</button>
+              <button class="save-button d-none" type="submit">Kaydet</button> </div>
+               
+          </div>
+
+         
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/form.js"></script>
+
+  <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+  <script>
+    ClassicEditor
+        .create( document.querySelector( '#editor' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
+
+</body>
+
 </html>

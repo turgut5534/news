@@ -9,6 +9,8 @@ const passport = require('./utils/passport')
 const bcrypt = require('bcrypt')
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
+const isLoggedIn = require('./middlewares/auth')
+const multer = require('multer')
 
 const publicDirectory = path.join(__dirname, '../public')
 const viewsDirectory = path.join(__dirname, '../templates/views')
@@ -27,44 +29,26 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.get('/', async(req,res) => {
 
-//     try {
-//         const allUsers = `SELECT * FROM users`;
-//         const {rows:users } =await pool.query(allUsers)
-    
-//         res.json(users)
-//     } catch(error) {
-//         console.log(error)
-//         res.status(500).json({"message" : "Something went wrong"})
-//     }
-
-// })
-
-app.get('/', (req,res) => {
-
-    if(!req.user) {
-        return res.redirect('/login')
-    }
+app.get('/', isLoggedIn, (req,res) => {
 
     res.redirect('/news/all')
-})
-
-app.get('/profile', (req,res) => {
-    res.json({
-        "email" : req.user
-    })
 })
 
 app.get('/news/write', (req,res) => {
     res.render('news_write')
 })
 
-app.get('/news/all', async(req,res) => {
+app.get('/news/all', isLoggedIn ,async(req,res) => {
     res.render('news')
 })
 
 app.get('/login', (req,res) => {
+
+    if(req.user) {
+      return res.json({"message" : "You are already logged in"})
+    }
+
     return res.render('login')
 })
 
@@ -87,6 +71,10 @@ app.post('/login', function(req, res, next) {
       });
     })(req, res, next);
   });
+
+app.post('/save', (req,res) => {
+  console.log(req.body)
+})
 
 app.listen(port, ()=> {
     console.log(`Server is up on ${port}`)
