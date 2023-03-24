@@ -1,78 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <title>Haber Ekle</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <title>Create News</title>
   <link rel="stylesheet" href="/css/form.css">
+  <script src="https://cdn.ckeditor.com/ckeditor5/31.1.0/classic/ckeditor.js"></script>
 </head>
 
 <body>
-  <div class="container mt-5">
-    <div class="row d-flex justify-content-center align-items-center">
-      <div class="col-md-12">
-        <form action="/save" method="POST" id="regForm">
-          <h1 id="register">Haber Ekle</h1>
-          <div class="all-steps" id="all-steps"> <span class="step"></span> <span class="step"></span> <span
-              class="step"></span> <span class="step"></span> </div>
-          <div class="tab">
-            <h3>Haber Başlığı:</h3>
-            <p><input type="text" oninput="this.className = ''" name="title"></p>
-
-          </div>
-          <div class="tab">
-             <h3>Haber İçeriği:</h3>
-              <textarea name="description" id="editor"></textarea>
-              
-
-          </div>
-          <div class="tab">
-
-              <h3>Haber Dili</h3>
-               <select class="form-control" name="lang" id="">
-                <option value="tr">Türkçe</option>
-                <option value="en">İngilizce</option>
-                <option value="es">İspanyolca</option>
-              </select>
-
-          </div>
-
-                    <div class="tab">
-
-              <h3>Haber Görseli</h3>
-               <input type="file" class="form-control" name="file" id="">
-
-          </div>
-
-          <div class="thanks-message text-center" id="text-message"> <img src="https://i.imgur.com/O18mJ1K.png"
-              width="100" class="mb-4">
-            <h3>Thanks for your Donation!</h3> <span>Your donation has been entered! We will contact you shortly!</span>
-          </div>
-          <div class="mt-2" style="overflow:auto;" id="nextprevious">
-            <div style="float:right;"> <button type="button" id="prevBtn" onclick="nextPrev(-1)">Geri</button>
-              <button type="button" id="nextBtn" onclick="nextPrev(1)">İleri</button>
-              <button class="save-button d-none" type="submit">Kaydet</button> </div>
-               
-          </div>
-
-         
-        </form>
-      </div>
-    </div>
+  <div class="container">
+    <h1>Haber Ekle</h1>
+    <form action="/save" method="POST" id="create-news-form" enctype="multipart/form-data">
+      <label for="title">Başlık:</label>
+      <input type="text" id="title" name="title">
+      <label for="category">Dil:</label>
+      <select id="category" name="lang">
+        <option value="tr">Türkçe</option>
+        <option value="en">English</option>
+        <option value="es">Espanol</option>
+      </select>
+      <label for="content">İçerik:</label>
+      <textarea id="content" name="description"></textarea>
+        <label for="title">Resim:</label>
+      <input type="file" id="title" name="image">
+      <button type="submit" id="submit-news-btn">Kaydet</button>
+    </form>
+    <div id="alert-container"></div>
   </div>
 
-  <script src="/js/form.js"></script>
-
-  <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script src="/js/ajax.js"></script>
   <script>
     ClassicEditor
-        .create( document.querySelector( '#editor' ) )
-        .catch( error => {
-            console.error( error );
-        } );
-</script>
-
+      .create(document.querySelector('#content'))
+      .catch(error => {
+        console.error(error);
+      });
+  </script>
 </body>
 
 </html>
