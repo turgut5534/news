@@ -1,12 +1,11 @@
 const express = require('express')
 const app = express()
-const hbs = require('hbs')
+require('./configs/hbsconfig')
 const port = process.env.PORT || 3000
 const path = require('path')
 const pool = require('../db/postresql');
 const bodyParser = require('body-parser')
 const passport = require('./utils/passport')
-const bcrypt = require('bcrypt')
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const isLoggedIn = require('./middlewares/auth')
@@ -19,19 +18,14 @@ const publicDirectory = path.join(__dirname, '../public')
 const viewsDirectory = path.join(__dirname, '../templates/views')
 const uploadDirectory = path.join(__dirname, '/../uploads')
 
+
 app.set('view engine', 'hbs')
 app.set('views', viewsDirectory)
 app.use(express.static(publicDirectory))
 app.use(express.static(uploadDirectory))
 app.use(bodyParser.urlencoded({extended: true}))
 
-hbs.registerHelper('compare', function(a, b) {
-  if (a === b) {
-    return true;
-  } else {
-    return false;
-  }
-});
+
 
 app.use(session({
     secret: 'secret',
