@@ -1,7 +1,7 @@
 const hbs = require('hbs')
 const path = require('path')
 
-const partialsDirectory = path.join(__dirname, '../templates/views/partials')
+const partialsDirectory = path.join(__dirname, '../../templates/views/partials')
 hbs.registerPartials(partialsDirectory)
 
 hbs.registerHelper('compare', function(a, b) {
