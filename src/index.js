@@ -41,6 +41,51 @@ app.get('/news/write', (req,res) => {
     res.render('news_write')
 })
 
+app.get('/edit/:id', async(req,res) => {
+
+    try {
+      const query = `SELECT * FROM news WHERE id=${req.params.id}`;
+      const { rows:news } = await pool.query(query);
+      res.render('news_edit', {
+        news: news[0]
+      })
+    } catch(e) {
+      console.log(e)
+    }
+    
+})
+
+app.post('/update', async(req,res) => {
+  
+  const { id, title, description, lang} = req.body
+  
+  try {
+
+    const getTheNews = `SELECT * FROM news WHERE id=$1`;
+    const getId = [id]
+    const { rows: theNews } = await pool.query(getTheNews, getId)
+
+    if(theNews.length == 0) {
+      return res.send('Haber bulunamadı')
+    }
+
+    const query = `UPDATE news 
+                  SET title=$1, description=$2, author = $3 ,lang=$4, updated_data= $5
+                  WHERE id=$6 `;
+    
+    const values = [title, description, 1, lang, new Date().toISOString(), id]
+
+    await pool.query(query, values)
+
+    res.redirect('/news/all')
+
+  } catch(e) {
+    console.log(e)
+    res.send(e)
+  }
+
+})
+
 app.get('/news/all' ,async(req,res) => {
 
     try {
@@ -128,6 +173,8 @@ app.post('/login', function(req, res, next) {
   const upload = multer({ storage: storage });
   
   app.post('/save', upload.single('image'), async(req, res) => {
+
+    console.log(req.body)
     
     const { title, description, lang} = req.body
 
@@ -137,14 +184,15 @@ app.post('/login', function(req, res, next) {
       VALUES ($1, $2, $3, $4, $5,$6,'2022-03-22 12:30:00', '2022-03-23 08:15:00', 'Health');
       `;
       
-      const values = [title, description, req.user.id, req.file.filename, req.file.filename, lang]
+      const values = [title, description, 1, req.file.filename, req.file.filename, lang]
   
       await pool.query(query, values)
   
       res.send('ok')
 
     } catch(e) {
-      res.send(e)
+      console.log(e)
+      res.status(401).send(e)
     }
 
   });

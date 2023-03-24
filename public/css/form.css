@@ -98,7 +98,7 @@ input[type="file"]:focus {
 }
 
 .ck-editor__editable {
-	height: 250px;
+	height: 500px;
 }
 
 @media only screen and (min-width: 768px) {
