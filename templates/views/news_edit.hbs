@@ -17,11 +17,12 @@
       <label for="title">Başlık:</label>
       <input type="text" id="title" name="title" value="{{news.title}}">
       <label for="category">Dil:</label>
-<select id="category" name="lang">
-  <option value="tr" {{#if (eq lang "tr")}}selected{{/if}}>Türkçe</option>
-  <option value="en" {{#if (eq lang "en")}}selected{{/if}}>English</option>
-  <option value="es" {{#if (eq lang "es")}}selected{{/if}}>Español</option>
-</select>
+      <select id="category" name="lang">
+        <option value="tr" {{#if (compare news.lang 'tr')}} selected {{/if}}>Türkçe</option>
+        <option value="en" {{#if (compare news.lang 'en')}} selected {{/if}}>English</option>
+        <option value="es" {{#if (compare news.lang 'es')}} selected {{/if}}>Español</option>
+      </select>
+
 
       <label for="content">İçerik:</label>
       <textarea id="content" name="description">{{news.description}}</textarea>

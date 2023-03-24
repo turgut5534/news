@@ -12,6 +12,8 @@ const session = require('express-session');
 const isLoggedIn = require('./middlewares/auth')
 const multer = require('multer')
 const sanitizeHtml = require('sanitize-html')
+const fs = require('fs')
+const { query } = require('express')
 
 const publicDirectory = path.join(__dirname, '../public')
 const viewsDirectory = path.join(__dirname, '../templates/views')
@@ -22,6 +24,14 @@ app.set('views', viewsDirectory)
 app.use(express.static(publicDirectory))
 app.use(express.static(uploadDirectory))
 app.use(bodyParser.urlencoded({extended: true}))
+
+hbs.registerHelper('compare', function(a, b) {
+  if (a === b) {
+    return true;
+  } else {
+    return false;
+  }
+});
 
 app.use(session({
     secret: 'secret',
@@ -53,6 +63,33 @@ app.get('/edit/:id', async(req,res) => {
       console.log(e)
     }
     
+})
+
+app.get('/delete/:id', async(req,res) => {
+
+  console.log(req.params.id)
+
+  try {
+    const getNew = `SELECT * FROM news WHERE id=$1`;
+    const deleteNew = `DELETE FROM news WHERE id=$1`;
+    const value = [req.params.id]
+    const { rows:news } = await pool.query(getNew, value)
+
+    if(news[0].image) {
+
+      const path = uploadDirectory + '/' + news[0].image
+      await fs.promises.unlink(path)
+      
+    }
+ 
+    await pool.query(deleteNew, value)
+
+    res.status(200).json({"status" : true})
+    
+  } catch(e) {
+    res.status(401).send(e)
+  }
+
 })
 
 app.post('/update', async(req,res) => {
