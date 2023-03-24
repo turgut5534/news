@@ -16,12 +16,12 @@
 			{{#each news}}
 			<div class="col-4">
 				<div class="card" style="width: 18rem;">
-					<img src="https://store-images.s-microsoft.com/image/apps.16894.c02476d2-2378-4f60-8290-b6d4b3842643.79a2ef6a-4775-4c79-8d93-9caf077660eb.1bbd88a4-0a17-4750-91a0-cd7d98f58e9d"
+					<img src="/{{image}}"
 						class="card-img-top" alt="...">
 					<div class="card-body">
-						<h5 class="card-title">{{this.title}}</h5>
-						<p class="card-text">{{this.description}}</p>
-						<a href="#" class="btn btn-primary">Go somewhere</a>
+						<h5 class="card-title">{{title}}</h5>
+						{{!-- <p class="card-text">{{description}}</p> --}}
+						<a href="/edit/{{id}}" class="btn btn-primary">Düzenle</a>
 					</div>
 				</div>
 			</div>

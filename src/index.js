@@ -11,13 +11,16 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const isLoggedIn = require('./middlewares/auth')
 const multer = require('multer')
+const sanitizeHtml = require('sanitize-html')
 
 const publicDirectory = path.join(__dirname, '../public')
 const viewsDirectory = path.join(__dirname, '../templates/views')
+const uploadDirectory = path.join(__dirname, '/../uploads')
 
 app.set('view engine', 'hbs')
 app.set('views', viewsDirectory)
 app.use(express.static(publicDirectory))
+app.use(express.static(uploadDirectory))
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.use(session({
@@ -44,8 +47,13 @@ app.get('/news/all' ,async(req,res) => {
       const query = `SELECT * FROM news`;
       const { rows:news } = await pool.query(query)
 
+      const sanitizedData = news.map(item => ({
+        ...item,
+        description: sanitizeHtml(item.description, { allowedTags: [], allowedAttributes: [] })
+      }));
+
       res.render('news', {
-        news: news
+        news: sanitizedData
       })
     } catch(e) {
       res.send('Hata')
