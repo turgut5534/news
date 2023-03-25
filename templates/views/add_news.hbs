@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/form.css">
+    <title>Haber Ekle</title>
+</head>
+
+<body>
+    {{> header}}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <form class="col-10" action="/save" method="POST" enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Haber Başlığı</label>
+                    <input type="text" class="form-control" name="title" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                <div class="mb-3">
+                    <label for="">Haber Dili</label>
+                    <select class="form-control" id="category" name="lang">
+                        <option value="tr">Türkçe</option>
+                        <option value="en">English</option>
+                        <option value="es">Espanol</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="">Haber İçeriği</label>
+                    <textarea id="content" name="description"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="">Haber Kapak Resmi</label>
+                    <input class="form-control" type="file" id="title" name="image" accept="image/*">
+                </div>
+
+                <button type="submit" class="btn btn-primary mb-3">Submit</button>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/31.1.0/classic/ckeditor.js"></script>
+    <script src="/js/ajax.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#content'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+</body>
+
+</html>

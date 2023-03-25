@@ -46,7 +46,7 @@ app.get('/', isLoggedIn, (req,res) => {
 })
 
 app.get('/news/write', (req,res) => {
-    res.render('news_write')
+    res.render('add_news')
 })
 
 app.get('/edit/:id', async(req,res) => {
@@ -54,7 +54,7 @@ app.get('/edit/:id', async(req,res) => {
     try {
       const query = `SELECT * FROM news WHERE id=${req.params.id}`;
       const { rows:news } = await pool.query(query);
-      res.render('news_edit', {
+      res.render('edit-news', {
         news: news[0]
       })
     } catch(e) {
@@ -134,7 +134,7 @@ app.get('/news/all' ,async(req,res) => {
         description: sanitizeHtml(item.description, { allowedTags: [], allowedAttributes: [] })
       }));
 
-      res.render('news', {
+      res.render('all', {
         news: sanitizedData
       })
     } catch(e) {
@@ -235,7 +235,7 @@ app.post('/login', function(req, res, next) {
   
       await pool.query(query, values)
   
-      res.send('ok')
+      res.redirect('/news/all')
 
     } catch(e) {
       console.log(e)
