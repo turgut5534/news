@@ -108,3 +108,42 @@ $('.delete-news').on('click', function(e) {
       })
 })
 
+$('.delete-tag').on('click', function(e) {
+    e.preventDefault()
+
+    Swal.fire({
+        title: 'Emin misiniz?',
+        text: "Haber silinecektir. Onaylıyor musunuz?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Evet',
+        cancelButtonText: 'Hayır'
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+            const id = $(this).data('id')
+
+            $.ajax({
+            type: "GET",
+            url : "/tags/delete/" +id ,
+            success: function() {
+
+                iziToast.success({
+                    title: 'Başarılı',
+                    message: 'Başarıyla Silindi!',
+                });
+                setTimeout(() => {
+                    location.reload()
+                }, 1000);
+            },
+            error: function (e) {
+                console.log(e)
+            }
+            })
+        }
+      })
+})
+
+

@@ -1,7 +1,6 @@
 const express = require('express')
 const multer = require('multer')
 const isLoggedIn = require('../middlewares/auth')
-const checkFields = require('../middlewares/validate')
 const router = new express.Router()
 const passport = require('../utils/passport')
 const pool = require('../../db/postresql')
@@ -23,7 +22,7 @@ router.get('/news/write', async(req,res) => {
 
       const { rows:tags } = await pool.query(tagQuery);
 
-      res.render('add_news', {
+      res.render('news/add_news', {
         tags: tags
       })
     } catch(e) {
@@ -37,7 +36,7 @@ router.get('/edit/:id', async(req,res) => {
     try {
       const query = `SELECT * FROM news WHERE id=${req.params.id}`;
       const { rows:news } = await pool.query(query);
-      res.render('edit-news', {
+      res.render('news/edit-news', {
         news: news[0]
       })
     } catch(e) {
@@ -115,7 +114,7 @@ router.get('/news/all' ,async(req,res) => {
       const query = `SELECT * FROM news`;
       const { rows:news } = await pool.query(query)
 
-      res.render('all', {
+      res.render('news/all', {
         news: news
       })
     } catch(e) {
@@ -131,7 +130,7 @@ router.get('/login', (req,res) => {
       return res.json({"message" : "You are already logged in"})
     }
 
-    return res.render('login')
+    return res.render('login/login')
 })
 
 router.get('/logout', (req,res) => {
@@ -175,7 +174,7 @@ router.post('/login', function(req, res, next) {
   
   const upload = multer({ storage: storage });
   
-  router.post('/save', checkFields, upload.single('image'), async(req, res) => {
+  router.post('/save', upload.single('image'), async(req, res) => {
     
     const { title, description, lang, tags} = req.body
 

@@ -8,6 +8,7 @@ const passport = require('./utils/passport')
 const session = require('express-session');
 const newsRouter = require('./routes/newsRouter')
 const apiRouter = require('./routes/newApiRouter')
+const tagsRouter = require('./routes/tagsRouter')
 
 const publicDirectory = path.join(__dirname, '../public')
 const viewsDirectory = path.join(__dirname, '../templates/views')
@@ -20,7 +21,6 @@ app.use(express.static(publicDirectory))
 app.use(express.static(uploadDirectory))
 app.use(bodyParser.urlencoded({extended: true}))
 
-
 app.use(session({
     secret: 'secret',
     resave: false,
@@ -32,6 +32,7 @@ app.use(passport.session());
 
 app.use(newsRouter)
 app.use(apiRouter)
+app.use(tagsRouter)
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
