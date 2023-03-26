@@ -14,7 +14,6 @@ const publicDirectory = path.join(__dirname, '../public')
 const viewsDirectory = path.join(__dirname, '../templates/views')
 const uploadDirectory = path.join(__dirname, '/../uploads')
 
-
 app.set('view engine', 'hbs')
 app.set('views', viewsDirectory)
 app.use(express.static(publicDirectory))
@@ -30,14 +29,16 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(newsRouter)
-app.use(apiRouter)
-app.use(tagsRouter)
-
 app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
+
+app.use(newsRouter)
+app.use(apiRouter)
+app.use(tagsRouter)
+
+
 
 app.listen(port, ()=> {
     console.log(`Server is up on ${port}`)

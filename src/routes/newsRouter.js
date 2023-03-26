@@ -32,7 +32,7 @@ router.get('/news/write', async(req,res) => {
     
 })
 
-router.get('/edit/:id', async(req,res) => {
+router.get('/edit/:id', isLoggedIn, async(req,res) => {
 
     try {
       const query = `SELECT * FROM news WHERE id=${req.params.id}`;
@@ -46,7 +46,7 @@ router.get('/edit/:id', async(req,res) => {
     
 })
 
-router.get('/delete/:id', async(req,res) => {
+router.get('/delete/:id', isLoggedIn, async(req,res) => {
 
   console.log(req.params.id)
 
@@ -78,7 +78,7 @@ router.get('/delete/:id', async(req,res) => {
 
 })
 
-router.post('/update', async(req,res) => {
+router.post('/update', isLoggedIn, async(req,res) => {
   
   const { id, title, description, lang} = req.body
   
@@ -109,7 +109,7 @@ router.post('/update', async(req,res) => {
 
 })
 
-router.get('/news/all' ,async(req,res) => {
+router.get('/news/all' , isLoggedIn, async(req,res) => {
 
     try {
       const query = `SELECT * FROM news`;
@@ -177,7 +177,7 @@ router.post('/login', function(req, res, next) {
   
   const upload = multer({ storage: storage });
   
-  router.post('/save', upload.single('image'), async(req, res) => {
+  router.post('/save', isLoggedIn, upload.single('image'),  async(req, res) => {
     
     const { title, description, lang, tags} = req.body
 

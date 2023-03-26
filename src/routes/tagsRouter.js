@@ -7,7 +7,7 @@ router.get('/tags/add', (req,res) => {
     res.render('tags/add_tag')
 })
 
-router.post('/tags/save', async(req,res) => {
+router.post('/tags/save', isLoggedIn, async(req,res) => {
 
     try {
       const query = `INSERT INTO tags(name)
@@ -26,7 +26,7 @@ router.post('/tags/save', async(req,res) => {
 
 })
 
-router.get('/tags/all', async(req,res) => {
+router.get('/tags/all',  isLoggedIn, async(req,res) => {
 
     const query = `SELECT * FROM tags`;
     const {rows:tags } = await pool.query(query)
@@ -37,7 +37,7 @@ router.get('/tags/all', async(req,res) => {
 
 })
 
-router.get('/tags/edit/:id', async(req,res) => {
+router.get('/tags/edit/:id', isLoggedIn, async(req,res) => {
 
     try {
       const query = `SELECT * FROM tags WHERE id=${req.params.id}`;
@@ -52,7 +52,7 @@ router.get('/tags/edit/:id', async(req,res) => {
     }
 })
 
-router.post('/tags/update', async(req,res) => {
+router.post('/tags/update', isLoggedIn, async(req,res) => {
 
   try {
 
@@ -69,7 +69,7 @@ router.post('/tags/update', async(req,res) => {
 
 })
 
-router.get('/tags/delete/:id', async(req,res) => {
+router.get('/tags/delete/:id', isLoggedIn, async(req,res) => {
 
 try {
 
