@@ -6,6 +6,7 @@ const passport = require('../utils/passport')
 const pool = require('../../db/postresql')
 const path = require('path')
 const fs = require('fs')
+const { v4: uuidv4 } = require('uuid');
 
 const uploadDirectory = path.join(__dirname, '/../../uploads')
 
@@ -88,7 +89,7 @@ router.post('/update', async(req,res) => {
     const { rows: theNews } = await pool.query(getTheNews, getId)
 
     if(theNews.length == 0) {
-      return res.send('Haber bulunamadı')
+      return res.status(500).send()
     }
 
     const query = `UPDATE news 
@@ -168,7 +169,9 @@ router.post('/login', function(req, res, next) {
       cb(null, 'uploads/')
     },
     filename: function (req, file, cb) {
-      cb(null, Date.now() + '-' + file.originalname)
+      const uniqueId = uuidv4();
+      const ext = path.extname(file.originalname);
+      cb(null, uniqueId + ext);
     }
   });
   
@@ -209,6 +212,7 @@ router.post('/login', function(req, res, next) {
         VALUES($1, $2)`;
         const values = [newsId, gotTag.id]
         await pool.query(tagInsertQuery, values)
+
       }
 
       res.redirect('/news/all')
