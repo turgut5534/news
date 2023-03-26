@@ -15,7 +15,7 @@ router.get('/', isLoggedIn, (req,res) => {
     res.redirect('/news/all')
 })
 
-router.get('/news/write', async(req,res) => {
+router.get('/news/write', isLoggedIn,  async(req,res) => {
 
     try {
 
@@ -184,10 +184,10 @@ router.post('/login', function(req, res, next) {
     try {
 
       const query = `INSERT INTO news (title, description, author, image, lang, created_at, updated_at)
-      VALUES ($1, $2, $3, $4, $5,'2022-03-22 12:30:00', '2022-03-23 08:15:00') RETURNING id
+      VALUES ($1, $2, $3, $4, $5,$6, $7) RETURNING id
       `;
       
-      const values = [title, description, 1, req.file.filename, lang]
+      const values = [title, description, 1, req.file.filename, lang, new Date().toISOString('tr-TR'), new Date().toISOString('tr-TR')]
   
       const { rows: [newsRow] } = await pool.query(query, values)
 
