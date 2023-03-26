@@ -113,7 +113,7 @@ $('.delete-news').on('click', function(e) {
       })
 })
 
-$('.delete-tag').on('click', function(e) {
+$('body').on('click', '.delete-tag', function(e) {
     e.preventDefault()
 
     Swal.fire({
@@ -143,7 +143,7 @@ $('.delete-tag').on('click', function(e) {
 
                 const count = $('.tags').length;
                 if(count == 0) {
-                    $('.tagsRow').append(`<p class="text-center h1">Etiket bulunamadı</p>`)
+                    $('.tagsRow').append(`<p class="text-center h1 no-tag">Etiket bulunamadı</p>`)
                 }
             },
             error: function (e) {

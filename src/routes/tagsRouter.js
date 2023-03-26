@@ -11,13 +11,15 @@ router.post('/tags/save', isLoggedIn, async(req,res) => {
 
     try {
       const query = `INSERT INTO tags(name)
-      VALUES($1)`;
+      VALUES($1) RETURNING id, name`;
 
       const values = [req.body.name];
       
-      await pool.query(query,values);
+      const { rows: [newTag] } = await pool.query(query,values);
+      console.log(newTag)
 
-      res.redirect('/tags/all')
+      // res.redirect('/tags/all')
+      res.status(201).json({id: newTag.id, name: newTag.name})
 
     } catch(e) {
       console.log(e)
