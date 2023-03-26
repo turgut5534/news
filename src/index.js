@@ -8,6 +8,7 @@ const passport = require('./utils/passport')
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const newsRouter = require('./routes/newsRouter')
+const apiRouter = require('./routes/newApiRouter')
 
 const publicDirectory = path.join(__dirname, '../public')
 const viewsDirectory = path.join(__dirname, '../templates/views')
@@ -20,6 +21,7 @@ app.use(express.static(publicDirectory))
 app.use(express.static(uploadDirectory))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(newsRouter)
+app.use(apiRouter)
 
 app.use(session({
     secret: 'secret',
