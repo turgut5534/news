@@ -134,9 +134,12 @@ $('.delete-tag').on('click', function(e) {
                     title: 'Başarılı',
                     message: 'Başarıyla Silindi!',
                 });
-                setTimeout(() => {
-                    location.reload()
-                }, 1000);
+                $('.tag-'+ id).remove()
+
+                const count = $('.tags').length;
+                if(count == 0) {
+                    $('.tagsRow').append(`<p class="text-center h1">Etiket bulunamadı</p>`)
+                }
             },
             error: function (e) {
                 console.log(e)
