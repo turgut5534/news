@@ -27,9 +27,10 @@
             {{#if tags}}
             {{#each tags}}
             <div class="col-lg-3 col-6 rounded-3 p-4 tags tag-{{id}}">
-                <span class="text-center d-block text-dark fs-3">{{name}}</span>
+                <span class="text-center d-block text-dark fs-3 tag-name-{{id}}">{{name}}</span>
                 <div class="mt-2 text-center">
-                    <a class="btn btn-primary" href="/tags/edit/{{id}}" d>Düzenle</a>
+                    <a href="javascript:;" class="btn btn-primary edit-tag" data-id="{{id}}"
+                        data-name="{{name}}">Düzenle</a>
                     <a class="btn btn-danger delete-tag" href="javascript:;" data-id="{{id}}">Sil</a>
                 </div>
 
@@ -66,6 +67,32 @@
         </div>
     </div>
 
+    <div class="modal fade" id="editTagModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="/tags/update" method="POST" id="update-tag-form" class="col-12 text-center update-tag">
+                    <div class="modal-body">
+
+
+                        <input type="hidden" name="tag_id" class="tag-hidden" value="">
+
+                        <div class="mb-3">
+                            <input type="text" class="tag-edit-input form-control" required name="name"
+                                placeholder="Etiket ismini giriniz">
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close" data-dismiss="editTagModal">Kapat</button>
+                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
@@ -78,6 +105,13 @@
         $('.abc').on('click', function () {
             $('#addTagModal').modal('show')
         });
+
+        $('body').on('click', '.edit-tag', function () {
+            $('#editTagModal').modal('show')
+            $('.tag-edit-input').val($(this).data('name'))
+            $('.tag-hidden').val($(this).data('id'))
+        });
+
 
         $('#add-tag-form').on('submit', function (e) {
 
@@ -104,7 +138,8 @@
                     $('.tagsRow').append(`<div class="col-lg-3 col-6 rounded-3 p-4 tags tag-${s.id}">
                 <span class="text-center d-block text-dark fs-3">${s.name}</span>
                 <div class="mt-2 text-center">
-                    <a class="btn btn-primary" href="/tags/edit/{${s.id}" d>Düzenle</a>
+                    <a href="javascript:;" class="btn btn-primary edit-tag" data-id="${s.id}"
+                        data-name="${s.name}">Düzenle</a>
                     <a class="btn btn-danger delete-tag" href="javascript:;" data-id="${s.id}">Sil</a>
                 </div>
             </div>`)
@@ -117,6 +152,36 @@
                     console.log(e)
                 }
             })
+        })
+
+        $('body').on('submit', '#update-tag-form', function (e) {
+
+            e.preventDefault()
+
+            const id = $('.tag-hidden').val()
+            const name = $('.tag-edit-input').val()
+
+            $.ajax({
+                type: 'POST',
+                url: "/tags/update",
+                dataType: 'JSON',
+                data: { id: id, name: name },
+                success: function (s) {
+
+                    console.log(s.name)
+                    $('.tag-name-' + s.id).html(s.name)
+                    $('#editTagModal').modal('hide')
+
+                    iziToast.success({
+                        title: 'Başarılı',
+                        message: 'Etiket Güncellendi',
+                    });
+                },
+                error: function (e) {
+                    console.log(e)
+                }
+            })
+
         })
 
         $('.close').on('click', function () {

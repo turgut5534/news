@@ -3,10 +3,6 @@ const isLoggedIn = require('../middlewares/auth')
 const router = new express.Router()
 const pool = require('../../db/postresql')
 
-router.get('/tags/add', (req,res) => {
-    res.render('tags/add_tag')
-})
-
 router.post('/tags/save', isLoggedIn, async(req,res) => {
 
     try {
@@ -18,7 +14,6 @@ router.post('/tags/save', isLoggedIn, async(req,res) => {
       const { rows: [newTag] } = await pool.query(query,values);
       console.log(newTag)
 
-      // res.redirect('/tags/all')
       res.status(201).json({id: newTag.id, name: newTag.name})
 
     } catch(e) {
@@ -58,11 +53,12 @@ router.post('/tags/update', isLoggedIn, async(req,res) => {
 
   try {
 
-    const query = `UPDATE tags SET name=$1 WHERE id=$2`;
+    const query = `UPDATE tags SET name=$1 WHERE id=$2 RETURNING id,name`;
     const values = [req.body.name, req.body.id]
-    await pool.query(query,values);
+    const { rows:[tag] } = await pool.query(query,values);
 
-    res.redirect('/tags/all')
+    // res.redirect('/tags/all')
+    res.status(201).json({id: tag.id, name: tag.name })
 
   } catch(e) {
     console.log(e)
