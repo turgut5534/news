@@ -1,6 +1,7 @@
 const express = require('express')
 const multer = require('multer')
 const isLoggedIn = require('../middlewares/auth')
+const checkFields = require('../middlewares/validate')
 const router = new express.Router()
 const passport = require('../utils/passport')
 const pool = require('../../db/postresql')
@@ -174,7 +175,7 @@ router.post('/login', function(req, res, next) {
   
   const upload = multer({ storage: storage });
   
-  router.post('/save', upload.single('image'), async(req, res) => {
+  router.post('/save', checkFields, upload.single('image'), async(req, res) => {
     
     const { title, description, lang, tags} = req.body
 

@@ -17,7 +17,7 @@ $('.signin-form').on('submit', function(e) {
 
             setTimeout(() => {
               location.href = '/'
-            }, 1500)
+            }, 1)
         },
         error :function(xhr, status, error) {
 
