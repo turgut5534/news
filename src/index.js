@@ -45,8 +45,21 @@ app.get('/', isLoggedIn, (req,res) => {
     res.redirect('/news/all')
 })
 
-app.get('/news/write', (req,res) => {
-    res.render('add_news')
+app.get('/news/write', async(req,res) => {
+
+    try {
+
+      const tagQuery = `SELECT * FROM tags`;
+
+      const { rows:tags } = await pool.query(tagQuery);
+
+      res.render('add_news', {
+        tags: tags
+      })
+    } catch(e) {
+      res.status(401).send(e)
+    }
+    
 })
 
 app.get('/edit/:id', async(req,res) => {
@@ -105,7 +118,7 @@ app.post('/update', async(req,res) => {
     }
 
     const query = `UPDATE news 
-                  SET title=$1, description=$2, author = $3 ,lang=$4, updated_data= $5
+                  SET title=$1, description=$2, author = $3 ,lang=$4, updated_at= $5
                   WHERE id=$6 `;
     
     const values = [title, description, 1, lang, new Date().toISOString(), id]
@@ -141,32 +154,6 @@ app.get('/news/all' ,async(req,res) => {
       res.send('Hata')
     }
 
-})
-
-app.get('/create', async(req,res) => {
-
-    try {
-      const query = `CREATE TABLE IF NOT EXISTS news (
-        id SERIAL PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        description TEXT,
-        author INTEGER NOT NULL REFERENCES users(id),
-        image VARCHAR(255),
-        url VARCHAR(255),
-        lang VARCHAR(4),
-        published_date TIMESTAMP DEFAULT NOW(),
-        updated_data TIMESTAMP,
-        category VARCHAR(50) NOT NULL
-      );`
-
-      await pool.query(query)
-
-      return res.json({"status": "Table was created"})
-    }
-
-    catch(e) {
-      return res.json({"status": "Error"})
-    }
 })
 
 app.get('/login', (req,res) => {
@@ -220,21 +207,45 @@ app.post('/login', function(req, res, next) {
   const upload = multer({ storage: storage });
   
   app.post('/save', upload.single('image'), async(req, res) => {
-
-    console.log(req.body)
     
-    const { title, description, lang} = req.body
+    const { title, description, lang, tags} = req.body
 
     try {
 
-      const query = `INSERT INTO news (title, description, author, image, url, lang, published_date, updated_data, category)
-      VALUES ($1, $2, $3, $4, $5,$6,'2022-03-22 12:30:00', '2022-03-23 08:15:00', 'Health');
+      const query = `INSERT INTO news (title, description, author, image, lang, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, $5,'2022-03-22 12:30:00', '2022-03-23 08:15:00') RETURNING id
       `;
       
-      const values = [title, description, 1, req.file.filename, req.file.filename, lang]
+      const values = [title, description, 1, req.file.filename, lang]
   
-      await pool.query(query, values)
-  
+      const { rows: [newsRow] } = await pool.query(query, values)
+
+      const newsId = newsRow.id;
+      
+      // if (!tags || tags.length === 0) {
+      //   res.status(400).json({ message: 'Tags array is empty or undefined' });
+      //   return;
+      // }
+
+      const tagInsertQuery = `INSERT INTO news_tags(news_id, tag_id)
+      SELECT $1, id FROM tags WHERE name = ANY($2)`;
+      const tagInsertValues = [newsId, tags];
+      await pool.query(tagInsertQuery, tagInsertValues);
+
+      for(const tag of tags) {
+
+        const getTagQuery = `SELECT * FROM tags WHERE id=$1`;
+        const getTagValue = [tag]
+        const { rows: [gotTag] } = await pool.query(getTagQuery,getTagValue);
+
+        const tagInsertQuery = `INSERT INTO news_tags(news_id, tag_id)
+        VALUES($1, $2)`;
+        const values = [newsId, gotTag.id]
+        await pool.query(tagInsertQuery, values)
+      }
+
+      console.log('asd')
+
       res.redirect('/news/all')
 
     } catch(e) {
@@ -243,7 +254,7 @@ app.post('/login', function(req, res, next) {
     }
 
   });
-  
+
 
 app.listen(port, ()=> {
     console.log(`Server is up on ${port}`)

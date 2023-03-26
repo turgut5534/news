@@ -40,7 +40,15 @@
                     <input class="form-control" type="file" id="title" name="image" accept="image/*">
                 </div>
 
-                <button type="submit" class="btn btn-primary mb-3">Submit</button>
+                <div class="mb-3">
+                    {{#each tags}}
+                        <input type="checkbox" name="tags[]" id="{{name}}" value="{{id}}">
+                        <label class="me-3" for="{{name}}">{{name}}</label>      
+                    {{/each}}
+                </div>
+                
+
+                <button type="submit" class="btn btn-primary mb-3">Kaydet</button>
 
             </form>
         </div>

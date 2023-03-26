@@ -88,19 +88,23 @@
     {{> header}}
     <div class="container mt-5">
         <div class="row">
-            {{#each news}}
-            <div class="col-md-3 col-sm-6">
-                <div class="card card-block">
-                    <h4 class="card-title text-right"><i class="material-icons">{{id}}</i></h4>
-                    <img src="/{{image}}" alt="Photo of sunset">
-                    <h5 class="card-title mt-3 mb-3">{{title}}</h5>
-                    <div>
-                        <a href="/edit/{{id}}" class="btn btn-primary">Düzenle</a>
-                        <a href="/delete/{{id}}" data-id="{{id}}" class="btn btn-danger delete-news">Sil</a>
+            {{#if news}}
+                {{#each news}}
+                <div class="col-md-3 col-sm-6">
+                    <div class="card card-block">
+                        <h4 class="card-title text-right"><i class="material-icons">{{id}}</i></h4>
+                        <img src="/{{image}}" alt="Photo of sunset">
+                        <h5 class="card-title mt-3 mb-3">{{title}}</h5>
+                        <div>
+                            <a href="/edit/{{id}}" class="btn btn-primary">Düzenle</a>
+                            <a href="/delete/{{id}}" data-id="{{id}}" class="btn btn-danger delete-news">Sil</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {{/each}}
+                {{/each}}
+            {{else}}
+                <p class="text-center h1">Haber bulunamadı</p>
+            {{/if}}
 
         </div>
 
