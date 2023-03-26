@@ -188,13 +188,12 @@ router.post('/login', function(req, res, next) {
   
       const { rows: [newsRow] } = await pool.query(query, values)
 
+      if (!tags || tags.length === 0) {
+        return res.redirect('/news/all')
+      }
+
       const newsId = newsRow.id;
       
-      // if (!tags || tags.length === 0) {
-      //   res.status(400).json({ message: 'Tags array is empty or undefined' });
-      //   return;
-      // }
-
       const tagInsertQuery = `INSERT INTO news_tags(news_id, tag_id)
       SELECT $1, id FROM tags WHERE name = ANY($2)`;
       const tagInsertValues = [newsId, tags];
@@ -211,8 +210,6 @@ router.post('/login', function(req, res, next) {
         const values = [newsId, gotTag.id]
         await pool.query(tagInsertQuery, values)
       }
-
-      console.log('asd')
 
       res.redirect('/news/all')
 
