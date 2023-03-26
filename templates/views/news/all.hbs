@@ -87,10 +87,10 @@
 <body>
     {{> header}}
     <div class="container mt-5">
-        <div class="row">
+        <div class="row newsRow">
             {{#if news}}
                 {{#each news}}
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-6 news news-{{id}}">
                     <div class="card card-block">
                         <h4 class="card-title text-right"><i class="material-icons">{{id}}</i></h4>
                         <img src="/{{image}}" alt="Photo of sunset">

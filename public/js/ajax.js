@@ -96,9 +96,14 @@ $('.delete-news').on('click', function(e) {
                     title: 'Başarılı',
                     message: 'Başarıyla Silindi!',
                 });
-                setTimeout(() => {
-                    location.reload()
-                }, 1000);
+              
+                $('.news-'+ id).remove()
+
+                const count = $('.news').length;
+                if(count == 0) {
+                    $('.newsRow').append(`<p class="text-center h1">Haber bulunamadı</p>`)
+                }
+
             },
             error: function (e) {
                 console.log(e)
