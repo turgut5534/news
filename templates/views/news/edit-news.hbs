@@ -49,12 +49,16 @@
                     </a>
                 </div>
 
+                {{#if news.tags.length}}
                 <div class="mb-3">
-                    {{#each tags}}
-                    <input type="checkbox" name="tags[]" id="{{name}}" value="{{id}}">
-                    <label class="me-3" for="{{name}}">{{name}}</label>
+                    <h3>Etiketler</h3>
+                    {{#each news.tags}}
+                    <input type="checkbox" checked name="tags[]" id="{{this}}" value="{{this}}">
+                    <label class="me-3" for="{{this}}">{{this}}</label>
+            
                     {{/each}}
                 </div>
+                {{/if}}
 
                 <button type="submit" class="btn btn-primary mb-3">Güncelle</button>
 

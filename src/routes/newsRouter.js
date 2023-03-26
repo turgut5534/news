@@ -35,8 +35,34 @@ router.get('/news/write', isLoggedIn,  async(req,res) => {
 router.get('/edit/:id', isLoggedIn, async(req,res) => {
 
     try {
-      const query = `SELECT * FROM news WHERE id=${req.params.id}`;
-      const { rows:news } = await pool.query(query);
+      // const query = `SELECT * FROM news WHERE id=${req.params.id}`;
+      const query = `
+      SELECT news.id, news.title, news.description, news.image, news.created_at, news.updated_at, 
+      COALESCE(array_agg(tags.name), '{}') as tags 
+      FROM news
+      LEFT JOIN news_tags ON news.id = news_tags.news_id
+      LEFT JOIN tags ON news_tags.tag_id = tags.id
+      WHERE news.id = $1
+      GROUP BY news.id, news.title, news.description, news.image, news.created_at, news.updated_at;
+    `;
+      const values = [req.params.id]
+      const { rows } = await pool.query(query,values);
+
+      const news = rows.map((row) => ({
+        id: row.id,
+        author: row.author,
+        title: row.title,
+        description: row.description,
+        image: row.image,
+        like_count: row.like_count,
+        dislike_count: row.dislike_count,
+        lang: row.lang,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        tags: row.tags,
+      }));
+
+      console.log(news)
       res.render('news/edit-news', {
         news: news[0]
       })
