@@ -21,7 +21,20 @@ router.get('/api/news', async (req, res) => {
         }
       }
   
-      const { rows: news } = await pool.query(query, params);
+      const { rows } = await pool.query(query, params);
+
+      const news = rows.map((row) => ({
+        id: row.id,
+        author: row.author,
+        title: row.title,
+        description: row.description,
+        image: `${req.protocol}://${req.get('host')}/${row.image}`,
+        like_count: row.like_count,
+        dislike_count: row.dislike_count,
+        lang: row.lang,
+        created_at: row.created_at,
+        updated_at: row.updated_at
+      }));
 
       if(news.length == 0 ) {
         return res.json( {"status" : false, "message" : "Haber bulunamadı"} )
