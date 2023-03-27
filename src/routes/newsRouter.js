@@ -124,7 +124,7 @@ router.post('/update', isLoggedIn, async(req,res) => {
                   SET title=$1, description=$2, author = $3 ,lang=$4, updated_at= $5
                   WHERE id=$6 `;
     
-    const values = [title, description, 76, lang, new Date().toISOString(), id]
+    const values = [title, description, req.user.id, lang, new Date().toISOString(), id]
 
     await pool.query(query, values)
 
@@ -225,7 +225,7 @@ router.post('/login', function(req, res, next) {
       VALUES ($1, $2, $3, $4, $5,$6, $7) RETURNING id
       `;
       
-      const values = [title, description, 76, req.file.filename, lang, new Date().toISOString('tr-TR'), new Date().toISOString('tr-TR')]
+      const values = [title, description, req.user.id, req.file.filename, lang, new Date().toISOString('tr-TR'), new Date().toISOString('tr-TR')]
   
       const { rows: [newsRow] } = await pool.query(query, values)
 
@@ -261,64 +261,5 @@ router.post('/login', function(req, res, next) {
     }
 
   });
-
-  router.get('/users/create', async(req,res) => {
-
-    try {
-      const query = `SELECT * from "user" WHERE id=76`;
-  
-  
-      const { rows: [user] } = await pool.query(query)
-
-      const salt = crypto.randomBytes(16).toString('hex');
-
-      const password = 'Turgut123';
-      
-      const hashedPassword = crypto.createHmac('sha512', salt)
-        .update(password)
-        .digest('hex');
-
-        const passwordQuery = `INSERT INTO user_password (user_id, hash_pass, salt_pass, created_date, updated_date)
-        VALUES($1, $2, $3, $4, $5)`;
-
-        const queryValues = [76, hashedPassword, salt, new Date().toISOString('tr-TR'), new Date().toISOString('tr-TR')]
-
-        console.log(hashedPassword)
-        console.log(salt)
-
-        await pool.query(passwordQuery, queryValues)
-
-      res.status(200).send(user)
-      
-    } catch(e) {
-      console.log(e)
-      res.status(500).send(e)
-    }
-
-
-  })
-
-  async function validatePassword(password, hash, salt) {
-    const hashVerify = crypto.createHmac('sha512', salt);
-    hashVerify.update(password);
-    const value = hashVerify.digest('hex');
-    return value === hash;
-  }
-
-  router.get('/test', async(req,res) => {
-
-      try {
-        
-        const { rows:[user] } = await pool.query(`SELECT * FROM user_password WHERE user_id=76`);
-        
-        console.log(user.salt_pass)
-  
-        res.status(200).send(user)
-      } catch(e) {
-        res.status(500).send(e)
-      }
-
-
-  })
 
   module.exports = router
