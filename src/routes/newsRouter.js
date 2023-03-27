@@ -33,7 +33,7 @@ router.get('/news/write', isLoggedIn,  async(req,res) => {
     
 })
 
-router.get('/edit/:id', isLoggedIn, async(req,res) => {
+router.get('/news/edit/:id', isLoggedIn, async(req,res) => {
 
     try {
       // const query = `SELECT * FROM news WHERE id=${req.params.id}`;
