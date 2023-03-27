@@ -37,7 +37,7 @@ router.get('/edit/:id', isLoggedIn, async(req,res) => {
     try {
       // const query = `SELECT * FROM news WHERE id=${req.params.id}`;
       const query = `
-      SELECT news.id, news.title, news.description, news.image, news.created_at, news.updated_at, 
+      SELECT news.id, news.title, news.description, news.image, news.lang , news.created_at, news.updated_at, 
       COALESCE(array_agg(tags.name), '{}') as tags 
       FROM news
       LEFT JOIN news_tags ON news.id = news_tags.news_id

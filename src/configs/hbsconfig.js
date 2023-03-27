@@ -13,13 +13,5 @@ hbs.registerHelper('compare', function(a, b) {
     }
   });
 
-  hbs.registerHelper('await', function(promise) {
-    return Promise.resolve(promise).then(function(value) {
-      return value;
-    });
-  });
-  
 
-
-  
 module.exports = hbs
