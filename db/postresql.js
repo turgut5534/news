@@ -1,26 +1,26 @@
 const { Pool } = require('pg')
 
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'chat',
-    password: 'Busra!keles!1',
-    port: 5432,
-})
-
 // const pool = new Pool({
 //     user: 'postgres',
-//     host: '45.79.250.159',
-//     database: 'touridetestdb',
-//     password: 'Tl5PThsBkAhKExs',
+//     host: 'localhost',
+//     database: 'chat',
+//     password: 'Busra!keles!1',
 //     port: 5432,
 // })
+
+const pool = new Pool({
+    user: 'postgres',
+    host: '45.79.250.159',
+    database: 'touridetestdb',
+    password: 'Tl5PThsBkAhKExs',
+    port: 5432,
+})
 
 const addTables = async() => {
 
     const newsTableQuery = `CREATE TABLE IF NOT EXISTS news (
         id SERIAL PRIMARY KEY,
-        author INTEGER NOT NULL REFERENCES users(id),
+        author INTEGER NOT NULL REFERENCES "user"(id),
         title VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
         image VARCHAR(255),
@@ -31,24 +31,32 @@ const addTables = async() => {
         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       );`;
 
-const tagsQuery = `CREATE TABLE IF NOT EXISTS tags (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL
-      );`;
+    const tagsQuery = `CREATE TABLE IF NOT EXISTS tags (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(255) NOT NULL
+          );`;
 
-const newsTagQuery = `CREATE TABLE news_tags (
-        id SERIAL PRIMARY KEY,
-        news_id INTEGER NOT NULL REFERENCES news(id),
-        tag_id INTEGER NOT NULL REFERENCES tags(id)
-      );`;
+    const newsTagQuery = `CREATE TABLE IF NOT EXISTS news_tags (
+            id SERIAL PRIMARY KEY,
+            news_id INTEGER NOT NULL REFERENCES news(id),
+            tag_id INTEGER NOT NULL REFERENCES tags(id)
+          );`;
+
+    const newsReactionQuery = `CREATE TABLE IF NOT EXISTS news_reaction (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER REFERENCES "user"(id),
+            news_id INTEGER REFERENCES news(id),
+            action_type INTEGER,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+          );`;
 
       try {
 
         await pool.query(newsTableQuery)
         await pool.query(tagsQuery)
         await pool.query(newsTagQuery)
-
-        console.log('Tables are created successfully')
+        await pool.query(newsReactionQuery)
 
       } catch(e) {
         console.log(e)

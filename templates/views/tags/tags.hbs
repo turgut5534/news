@@ -170,6 +170,7 @@
 
                     console.log(s.name)
                     $('.tag-name-' + s.id).html(s.name)
+                    $('.edit-tag').attr('data-name', s.name)
                     $('#editTagModal').modal('hide')
 
                     iziToast.success({
