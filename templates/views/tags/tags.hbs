@@ -25,19 +25,20 @@
 
         <div class="row justify-content-center tagsRow">
             {{#if tags}}
-            {{#each tags}}
-            <div class="col-lg-3 col-6 rounded-3 p-4 tags tag-{{id}}">
-                <span class="text-center d-block text-dark fs-3 tag-name-{{id}}">{{name}}</span>
-                <div class="mt-2 text-center">
-                    <a href="javascript:;" class="btn btn-primary edit-tag" data-id="{{id}}"
-                        data-name="{{name}}">Düzenle</a>
-                    <a class="btn btn-danger delete-tag" href="javascript:;" data-id="{{id}}">Sil</a>
+                {{#each tags}}
+                <div class="col-lg-3 col-6 rounded-3 p-4 tags tag-{{id}}">
+                    <div style="border-radius: 15px;" class="bg-dark p-3">
+                        <span class="text-center d-block text-light fs-3 tag-name-{{id}}">{{name}}</span>
+                        <div class="mt-3 mb-2 text-center">
+                            <a href="javascript:;" class="btn btn-primary edit-tag" data-id="{{id}}"
+                                data-name="{{name}}">Düzenle</a>
+                            <a class="btn btn-danger delete-tag" href="javascript:;" data-id="{{id}}">Sil</a>
+                        </div>
+                    </div>
                 </div>
-
-            </div>
-            {{/each}}
+                {{/each}}
             {{else}}
-            <p class="text-center h1 no-tag">Etiket bulunamadı</p>
+                <p class="text-center h1 no-tag">Etiket bulunamadı</p>
             {{/if}}
         </div>
     </div>
@@ -136,11 +137,13 @@
                     });
 
                     $('.tagsRow').append(`<div class="col-lg-3 col-6 rounded-3 p-4 tags tag-${s.id}">
-                <span class="text-center d-block text-dark fs-3">${s.name}</span>
-                <div class="mt-2 text-center">
+                        <div style="border-radius: 15px;" class="bg-dark p-3">
+                <span class="text-center d-block text-light fs-3">${s.name}</span>
+                <div class="mt-3 mb-2 text-center">
                     <a href="javascript:;" class="btn btn-primary edit-tag" data-id="${s.id}"
                         data-name="${s.name}">Düzenle</a>
                     <a class="btn btn-danger delete-tag" href="javascript:;" data-id="${s.id}">Sil</a>
+                </div>
                 </div>
             </div>`)
 
