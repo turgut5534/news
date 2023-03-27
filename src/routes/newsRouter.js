@@ -37,11 +37,12 @@ router.get('/edit/:id', isLoggedIn, async(req,res) => {
     try {
       // const query = `SELECT * FROM news WHERE id=${req.params.id}`;
       const query = `
-      SELECT news.id, news.title, news.description, news.image, news.lang , news.created_at, news.updated_at, 
+      SELECT news.id, news.title, news.author, news.description, news.image, news.lang , news.created_at, news.updated_at, 
       COALESCE(array_agg(tags.name), '{}') as tags 
       FROM news
       LEFT JOIN news_tags ON news.id = news_tags.news_id
       LEFT JOIN tags ON news_tags.tag_id = tags.id
+      LEFT JOIN users ON news.author = users.id
       WHERE news.id = $1
       GROUP BY news.id, news.title, news.description, news.image, news.created_at, news.updated_at;
     `;
@@ -138,8 +139,18 @@ router.post('/update', isLoggedIn, async(req,res) => {
 router.get('/news/all' , isLoggedIn, async(req,res) => {
 
     try {
-      const query = `SELECT * FROM news`;
+      const query = `SELECT news.id, news.title, news.author, news.description, news.image, news.lang , news.created_at, news.updated_at, 
+      COALESCE(array_agg(tags.name), '{}') as tags,
+      users.name as username
+      FROM news
+      LEFT JOIN news_tags ON news.id = news_tags.news_id
+      LEFT JOIN tags ON news_tags.tag_id = tags.id
+      LEFT JOIN users ON news.author = users.id
+      GROUP BY news.id, news.title, news.description, news.image, news.created_at, news.updated_at, users.name;
+      `;
       const { rows:news } = await pool.query(query)
+
+      console.log(news)
 
       res.render('news/all', {
         news: news
