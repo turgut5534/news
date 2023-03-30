@@ -4,11 +4,17 @@ const crypto = require('crypto');
 
 const db = require('../../db/postresql'); // assuming you have a separate file to establish the database connection
 
-async function validatePassword(password, hash, salt) {
-    const hashVerify = crypto.createHmac('sha512', salt);
-    hashVerify.update(password);
-    const value = hashVerify.digest('hex');
-    return value === hash;
+function verifyPassword(inputPassword, storedPasswordHash, storedPasswordSalt) {
+
+    storedPasswordHash = Buffer.from(storedPasswordHash)
+    storedPasswordSalt = Buffer.from(storedPasswordSalt)
+
+    const hmac = crypto.createHmac('sha512', storedPasswordSalt);
+    const computeHash = hmac.update(inputPassword).digest('hex');
+    
+    const isMatched = Buffer.from(computeHash, 'hex').equals(storedPasswordHash);
+
+    return isMatched
   }
 
 passport.use(new LocalStrategy({
@@ -25,16 +31,7 @@ passport.use(new LocalStrategy({
     const passwordValues = [user.rows[0].id];
     const { rows: [dbPassword] } = await db.query(passwordQuery, passwordValues);
 
-    const hexSaltString = dbPassword.salt_pass.toString('hex')
-    const saltBuffer = Buffer.from(hexSaltString, 'hex')
-    const convertedSalt = saltBuffer.toString()
-
-    const hexPasswordString = dbPassword.hash_pass.toString('hex')
-    const passwordBuffer = Buffer.from(hexPasswordString, 'hex')
-    const convertedPassword = passwordBuffer.toString()
-
-    // const passwordMatch = await bcrypt.compare(password.toString(), hashedPassword.toString());
-    const passwordMatch = await validatePassword(password.toString(), convertedPassword, convertedSalt);
+    const passwordMatch = await verifyPassword(password.toString(), dbPassword.hash_pass, dbPassword.salt_pass);
 
 
     if (!passwordMatch) {
